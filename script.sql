@@ -318,6 +318,8 @@ INSERT INTO mensaje (fecha, hora, contenido)
 VALUES (CURDATE(), DATE_ADD(NOW(), INTERVAL 1 HOUR), 'Hola mundo');
 # Se espera un error debido a hora futura
 
+
+# TODO ojo no retorna lo que esperaba
 # 45. 1 producto de cada pedido por fecha de pedido de 1 usuario sin repetirse
 SELECT pedido.fecha, producto.nombre
 FROM pedido
