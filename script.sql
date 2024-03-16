@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS pedido
 (
     id           INT          NOT NULL AUTO_INCREMENT UNIQUE,
     fecha        DATE         NOT NULL,
-    cant_apagar  INT          NULL,
+    cant_a_pagar INT          NULL, # puede ser nulo si el pedido se paga con tarjeta
     propina      INT          NOT NULL,
     total        INT          NOT NULL,
     pagado       TINYINT      NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS pedido
 CREATE TABLE IF NOT EXISTS usuario
 (
     id              INT          NOT NULL AUTO_INCREMENT UNIQUE,
-    rol             VARCHAR(13)  NOT NULL,
+    rol             VARCHAR(13)  NOT NULL DEFAULT 'usuario', # puede ser usuario o administrador
     clave           VARCHAR(10)  NOT NULL,
     nombre_completo VARCHAR(100) NOT NULL,
     email           VARCHAR(100) NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS mensaje
 (
     id        INT           NOT NULL AUTO_INCREMENT UNIQUE,
     fecha     DATE          NOT NULL,
-    hora      DATETIME      NOT NULL,
+    hora      TIME          NOT NULL,
     contenido VARCHAR(1000) NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
@@ -48,11 +48,12 @@ CREATE TABLE IF NOT EXISTS producto
 (
     id            INT         NOT NULL AUTO_INCREMENT UNIQUE,
     precio        INT         NOT NULL CHECK (precio > 0),
-    cantidad      INT         NOT NULL,
-    recomendacion TINYINT     NOT NULL,
+    cantidad      INT         NOT NULL check ( cantidad >= 0),
+    recomendacion TINYINT     NOT NULL,           # 1 recomendado, 0 no recomendado
     imagen        BLOB        NOT NULL,
-    categoria     VARCHAR(20) NOT NULL,
+    categoria     VARCHAR(20) NOT NULL,           # solo: 'bebida abierta', 'bebida cerrada' y 'alimentos'
     nombre        VARCHAR(50) NOT NULL,
+    visible       TINYINT     NOT NULL DEFAULT 1, # 1 visible, 0 no visible
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
@@ -61,6 +62,7 @@ CREATE TABLE IF NOT EXISTS pedido_tiene_producto
     pedido_id   INT NOT NULL,
     producto_id INT NOT NULL,
     cantidad    INT NOT NULL,
+    precio INT NOT NULL CHECK (precio > 0), # precio del producto en el momento de la compra
     PRIMARY KEY (pedido_id, producto_id),
     INDEX fk_pedido_has_producto_producto1_idx (producto_id ASC),
     INDEX fk_pedido_has_producto_pedido1_idx (pedido_id ASC),
@@ -86,7 +88,7 @@ CREATE TABLE IF NOT EXISTS usuario_has_mensaje
 
 # 1. Insertar un nuevo pedido
 INSERT INTO pedido (fecha, cant_apagar, propina, total, pagado, preferencias, ubicacion, folio, estado)
-VALUES ('2024-03-12', 50, 5, 55, 1, 'Sin azúcar', 'Mesa 3', '123456', 'En proceso');
+VALUES ('2024-03-12', 50, 5, 55, 1, 'Sin azúcar', 'Aula 123', '123456', 'En proceso');
 
 # 2. Insertar un nuevo usuario y asociarlo a un pedido existente
 INSERT INTO usuario (rol, clave, nombre_completo, email, imagen_perfil, pedido_id)
@@ -103,7 +105,7 @@ VALUES (15, 20, 0, 'foto', 'bebida', 'Jugo de naranja');
 # 5. Insertar una relación entre un pedido y un producto existente
 INSERT INTO pedido_tiene_producto (pedido_id, producto_id, cantidad)
 VALUES (1, 1, 2);
-# Suponiendo que el pedido y el producto existen con los IDs respectivos.
+# son los que acabamos de crear
 
 # 6. Actualizar el estado de un pedido existente
 UPDATE pedido
@@ -126,7 +128,7 @@ FROM producto
 WHERE id = 1;
 
 # 10. Consulta con JOIN para obtener información de pedidos y productos asociados
-SELECT pedido.*, producto.nombre AS nombre_producto, producto.precio
+SELECT pedido.*, producto.nombre AS nombre_producto, producto.precio, pedido_tiene_producto.cantidad
 FROM pedido
          JOIN pedido_tiene_producto ON pedido.id = pedido_tiene_producto.pedido_id
          JOIN producto ON pedido_tiene_producto.producto_id = producto.id;
@@ -155,7 +157,7 @@ VALUES (-10, 20, 0, 'foto', 'bebida', 'Jugo de naranja');
 
 # 15. Insertar un pedido con estado inválido y verificar que se rechace la inserción
 INSERT INTO pedido (fecha, cant_apagar, propina, total, pagado, preferencias, ubicacion, folio, estado)
-VALUES ('2024-03-12', 50, 5, 55, 1, 'Sin azúcar', 'Mesa 3', '123456', 'Estado inválido');
+VALUES ('2024-03-12', 50, 5, 55, 1, 'Sin azúcar', 'Aula 123', '123456', 'Estado inválido');
 # Se espera un error debido a estado inválido
 
 # 16. Actualizar un usuario con clave demasiado larga y verificar que se rechace la actualización
@@ -191,7 +193,7 @@ WHERE usuario.id = 100;
 
 # 21. Insertar un pedido con folio duplicado y verificar que se rechace la inserción
 INSERT INTO pedido (fecha, cant_apagar, propina, total, pagado, preferencias, ubicacion, folio, estado)
-VALUES ('2024-03-12', 50, 5, 55, 1, 'Sin azúcar', 'Mesa 3', '123456', 'En proceso');
+VALUES ('2024-03-12', 50, 5, 55, 1, 'Sin azúcar', 'Aula 123', '123456', 'En proceso');
 # Se espera un error debido a folio duplicado
 
 # 22. Actualizar el estado de un pedido a un valor no permitido y verificar que se rechace la actualización
