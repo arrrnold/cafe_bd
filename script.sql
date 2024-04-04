@@ -10,13 +10,13 @@ CREATE TABLE IF NOT EXISTS pedido
 (
     id           INT          NOT NULL AUTO_INCREMENT UNIQUE,
     fecha        DATE         NOT NULL,
-    cant_a_pagar INT          NULL, # puede ser nulo si el pedido se paga con tarjeta
+    cant_a_pagar INT          DEFAULT NULL, # puede ser nulo si el pedido se paga con tarjeta
     propina      INT          NOT NULL,
     total        INT          NOT NULL,
     pagado       TINYINT      NOT NULL,
     preferencias VARCHAR(500) NOT NULL,
     ubicacion    VARCHAR(500) NOT NULL,
-    folio        VARCHAR(45)  NULL, # puede ser nulo si el pedido se en efectivo
+    folio        VARCHAR(45)  DEFAULT NULL, # puede ser nulo si el pedido se en efectivo
     estado       VARCHAR(45)  NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS usuario
     nombre_completo VARCHAR(100) NOT NULL,
     email           VARCHAR(100) NOT NULL,
     imagen_perfil   BLOB         NOT NULL,
-    pedido_id       INT          NULL,                       # puede ser nulo si el usuario no ha hecho un pedido
+    pedido_id       INT          DEFAULT NULL,                       # puede ser nulo si el usuario no ha hecho un pedido
     PRIMARY KEY (id),
     INDEX fk_usuario_pedido1_idx (pedido_id ASC),
     CONSTRAINT fk_usuario_pedido1 FOREIGN KEY (pedido_id) REFERENCES pedido (id) ON DELETE NO ACTION ON UPDATE NO ACTION
