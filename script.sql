@@ -6,7 +6,7 @@ DROP SCHEMA IF EXISTS cafeteria;
 CREATE SCHEMA IF NOT EXISTS cafeteria DEFAULT CHARACTER SET utf8;
 USE cafeteria;
 
-CREATE TABLE IF NOT EXISTS pedido
+CREATE TABLE IF NOT EXISTS pedidos
 (
     id           INT          NOT NULL AUTO_INCREMENT UNIQUE,
     fecha        DATE         NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS pedido
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS usuario
+CREATE TABLE IF NOT EXISTS usuarios
 (
     id                        INT          NOT NULL AUTO_INCREMENT UNIQUE,
     rol                       VARCHAR(13)  NOT NULL DEFAULT 'usuario', # puede ser usuario o administrador
@@ -33,11 +33,11 @@ CREATE TABLE IF NOT EXISTS usuario
     token_de_restablecimiento VARCHAR(100)          DEFAULT NULL,      # puede ser nulo si el usuario no ha solicitado restablecer su contraseña (campo requerido segun https://es.linkedin.com/pulse/recuperar-cuenta-restaurando-contrase%C3%B1a-password-con-y-miguel-%C3%A1ngel)
     PRIMARY KEY (id),
     INDEX fk_usuario_pedido1_idx (pedido_id ASC),
-    CONSTRAINT fk_usuario_pedido1 FOREIGN KEY (pedido_id) REFERENCES pedido (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+    CONSTRAINT fk_usuario_pedido1 FOREIGN KEY (pedido_id) REFERENCES pedidos (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 
-CREATE TABLE IF NOT EXISTS mensaje
+CREATE TABLE IF NOT EXISTS mensajes
 (
     id        INT           NOT NULL AUTO_INCREMENT UNIQUE,
     fecha     DATE          NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS mensaje
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS producto
+CREATE TABLE IF NOT EXISTS productos
 (
     id            INT         NOT NULL AUTO_INCREMENT UNIQUE,
     precio        INT         NOT NULL CHECK (precio > 0),
@@ -68,8 +68,8 @@ CREATE TABLE IF NOT EXISTS pedido_tiene_producto
     PRIMARY KEY (pedido_id, producto_id),
     INDEX fk_pedido_has_producto_producto1_idx (producto_id ASC),
     INDEX fk_pedido_has_producto_pedido1_idx (pedido_id ASC),
-    CONSTRAINT fk_pedido_has_producto_pedido1 FOREIGN KEY (pedido_id) REFERENCES pedido (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_pedido_has_producto_producto1 FOREIGN KEY (producto_id) REFERENCES producto (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+    CONSTRAINT fk_pedido_has_producto_pedido1 FOREIGN KEY (pedido_id) REFERENCES pedidos (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_pedido_has_producto_producto1 FOREIGN KEY (producto_id) REFERENCES productos (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS usuario_has_mensaje
@@ -79,6 +79,6 @@ CREATE TABLE IF NOT EXISTS usuario_has_mensaje
     PRIMARY KEY (usuario_id, mensaje_id),
     INDEX fk_usuario_has_mensaje_mensaje1_idx (mensaje_id ASC),
     INDEX fk_usuario_has_mensaje_usuario1_idx (usuario_id ASC),
-    CONSTRAINT fk_usuario_has_mensaje_usuario1 FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_usuario_has_mensaje_mensaje1 FOREIGN KEY (mensaje_id) REFERENCES mensaje (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+    CONSTRAINT fk_usuario_has_mensaje_usuario1 FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_usuario_has_mensaje_mensaje1 FOREIGN KEY (mensaje_id) REFERENCES mensajes (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB;

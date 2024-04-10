@@ -84,23 +84,23 @@
 #
 
 # 1. Insertar un pedido en efectivo
-INSERT INTO pedido (fecha, cant_a_pagar, propina, total, pagado, preferencias, ubicacion, folio, estado)
+INSERT INTO pedidos (fecha, cant_a_pagar, propina, total, pagado, preferencias, ubicacion, folio, estado)
 VALUES ('2021-05-01', 100, 20, 120, 1, 'sin azúcar', 'Aula 123', null, 'entregado');
 
 # 2. Insertar un pedido con tarjeta
-INSERT INTO pedido (fecha, cant_a_pagar, propina, total, pagado, preferencias, ubicacion, folio, estado)
+INSERT INTO pedidos (fecha, cant_a_pagar, propina, total, pagado, preferencias, ubicacion, folio, estado)
 VALUES ('2021-05-01', null, 20, 120, 1, 'sin cebolla', 'Lab. de computo', '1234567890', 'entregado');
 
 # 3. Insertar un usuario
-INSERT INTO usuario (rol, clave, nombre_completo, email, imagen_perfil, pedido_id)
+INSERT INTO usuarios (rol, clave, nombre_completo, email, imagen_perfil, pedido_id)
 VALUES ('usuario', '123456', 'Juan Pérez', 'juan@mail.com', 'imagen', null);
 
 # 4. Insertar un mensaje
-INSERT INTO mensaje (fecha, hora, contenido)
+INSERT INTO mensajes (fecha, hora, contenido)
 VALUES ('2021-05-01', '12:00:00', 'Hola, ¿cómo estás?');
 
 # 5. Insertar un producto
-INSERT INTO producto (precio, cantidad, recomendacion, imagen, categoria, nombre, visible)
+INSERT INTO productos (precio, cantidad, recomendacion, imagen, categoria, nombre, visible)
 VALUES (20, 100, 1, 'imagen', 'bebida abierta', 'Coca Cola', 1);
 
 # 6. Añadir ese producto a un pedido
@@ -112,26 +112,26 @@ INSERT INTO usuario_has_mensaje (usuario_id, mensaje_id)
 VALUES (1, 1);
 
 # 7.1 Añadir un pedido a un usuario
-UPDATE usuario
+UPDATE usuarios
 SET pedido_id = 1
 WHERE id = 1;
 
 /* Pruebas de actualizacion (solo actualizan los usuarios y los productos) */
 
 # 8. Actualizar un usuario
-UPDATE usuario
+UPDATE usuarios
 SET nombre_completo = 'Juan Pérez Pérez'
 WHERE id = 1;
 
 # 9. Actualizar un producto
-UPDATE producto
+UPDATE productos
 SET precio = 25
 WHERE id = 1;
 
 /* Pruebas de 'eliminacion' de los productos */
 
 # 10. Eliminar un producto (solo se oculta)
-UPDATE producto
+UPDATE productos
 SET visible = 0
 WHERE id = 1;
 
@@ -140,20 +140,21 @@ WHERE id = 1;
  */
 
 # 11. Consultar todos los pedidos
-SELECT * FROM pedido;
+SELECT * FROM pedidos;
 
 # 12. Consultar todos los usuarios
-SELECT * FROM usuario;
+SELECT * FROM usuarios;
 
 # 13. Consultar todos los mensajes
-SELECT * FROM mensaje;
+SELECT * FROM mensajes;
 
 # 14. Consultar todos los productos
-SELECT * FROM producto;
+SELECT * FROM productos;
 
 /* Consultas mas avanzadas */
 
 # 16. Todos los pedidos de un usuario
-SELECT * FROM pedido
-WHERE id = (SELECT pedido_id FROM usuario WHERE id = 1);
+SELECT * FROM pedidos
+WHERE id = (SELECT pedido_id FROM usuarios WHERE id = 1);
+
 
