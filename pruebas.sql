@@ -71,7 +71,7 @@
 #     CONSTRAINT fk_pedido_has_producto_producto1 FOREIGN KEY (producto_id) REFERENCES producto (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 # ) ENGINE = InnoDB;
 #
-# CREATE TABLE IF NOT EXISTS usuario_has_mensaje
+# CREATE TABLE IF NOT EXISTS usuario_tiene_mensaje
 # (
 #     usuario_id INT NOT NULL,
 #     mensaje_id INT NOT NULL,
@@ -108,7 +108,7 @@ INSERT INTO pedido_tiene_producto (pedido_id, producto_id, cantidad, precio)
 VALUES (1, 1, 2, 20);
 
 # 7. Añadir un mensaje a un usuario
-INSERT INTO usuario_has_mensaje (usuario_id, mensaje_id)
+INSERT INTO usuario_tiene_mensaje (usuario_id, mensaje_id)
 VALUES (1, 1);
 
 # 7.1 Añadir un pedido a un usuario

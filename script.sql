@@ -72,13 +72,13 @@ CREATE TABLE IF NOT EXISTS pedido_tiene_producto
     CONSTRAINT fk_pedido_has_producto_producto1 FOREIGN KEY (producto_id) REFERENCES productos (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
 
-CREATE TABLE IF NOT EXISTS usuario_has_mensaje
+CREATE TABLE IF NOT EXISTS usuario_tiene_mensaje
 (
     usuario_id INT NOT NULL,
     mensaje_id INT NOT NULL,
     PRIMARY KEY (usuario_id, mensaje_id),
-    INDEX fk_usuario_has_mensaje_mensaje1_idx (mensaje_id ASC),
-    INDEX fk_usuario_has_mensaje_usuario1_idx (usuario_id ASC),
-    CONSTRAINT fk_usuario_has_mensaje_usuario1 FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-    CONSTRAINT fk_usuario_has_mensaje_mensaje1 FOREIGN KEY (mensaje_id) REFERENCES mensajes (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+    INDEX fk_usuario_tiene_mensaje_mensaje1_idx (mensaje_id ASC),
+    INDEX fk_usuario_tiene_mensaje_usuario1_idx (usuario_id ASC),
+    CONSTRAINT fk_usuario_tiene_mensaje_usuario1 FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_usuario_tiene_mensaje_mensaje1 FOREIGN KEY (mensaje_id) REFERENCES mensajes (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
