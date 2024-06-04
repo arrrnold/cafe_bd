@@ -25,12 +25,11 @@ CREATE TABLE IF NOT EXISTS usuarios
 (
     id                        INT          NOT NULL AUTO_INCREMENT UNIQUE,
     rol                       VARCHAR(13)  NOT NULL DEFAULT 'usuario', # puede ser usuario o administrador
-    clave                     VARCHAR(10)  NOT NULL,
+    clave                     VARCHAR(250) NOT NULL,
     nombre_completo           VARCHAR(100) NOT NULL,
     email                     VARCHAR(100) NOT NULL,
     imagen_perfil             BLOB                  DEFAULT NULL,      # por defecto no tiene foto de perfil
     pedido_id                 INT                   DEFAULT NULL,      # puede ser nulo si el usuario no ha hecho un pedido
-    token_de_restablecimiento VARCHAR(100)          DEFAULT NULL,      # puede ser nulo si el usuario no ha solicitado restablecer su contraseña (campo requerido segun https://es.linkedin.com/pulse/recuperar-cuenta-restaurando-contrase%C3%B1a-password-con-y-miguel-%C3%A1ngel)
     PRIMARY KEY (id),
     INDEX fk_usuario_pedido1_idx (pedido_id ASC),
     CONSTRAINT fk_usuario_pedido1 FOREIGN KEY (pedido_id) REFERENCES pedidos (id) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -82,3 +81,4 @@ CREATE TABLE IF NOT EXISTS usuario_tiene_mensaje
     CONSTRAINT fk_usuario_tiene_mensaje_usuario1 FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT fk_usuario_tiene_mensaje_mensaje1 FOREIGN KEY (mensaje_id) REFERENCES mensajes (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
+

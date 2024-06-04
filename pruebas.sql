@@ -52,7 +52,7 @@
 #     cantidad      INT         NOT NULL check ( cantidad >= 0),
 #     recomendacion TINYINT     NOT NULL,           # 1 recomendado, 0 no recomendado
 #     imagen        BLOB        NOT NULL,
-#     categoria     VARCHAR(20) NOT NULL,           # solo: 'bebida abierta', 'bebida cerrada' y 'alimentos'
+#     categoria     VARCHAR(20) NOT NULL,           # solo: 'Bebida abierta', 'Bebida cerrada' y 'Alimentos'
 #     nombre        VARCHAR(50) NOT NULL,
 #     visible       TINYINT     NOT NULL DEFAULT 1, # 1 visible, 0 no visible
 #     PRIMARY KEY (id)
@@ -95,13 +95,21 @@ VALUES ('2021-05-01', null, 20, 120, 1, 'sin cebolla', 'Lab. de computo', '12345
 INSERT INTO usuarios (rol, clave, nombre_completo, email, imagen_perfil, pedido_id)
 VALUES ('usuario', '123456', 'Juan Pérez', 'juan@mail.com', 'imagen', null);
 
+# 3.1 Insertar un administrador
+INSERT INTO usuarios (rol, clave, nombre_completo, email, imagen_perfil, pedido_id)
+VALUES ('administrador', '123456', 'Pedro Pérez', 'pedro@mail.com', 'imagen', null);
+
 # 4. Insertar un mensaje
 INSERT INTO mensajes (fecha, hora, contenido)
 VALUES ('2021-05-01', '12:00:00', 'Hola, ¿cómo estás?');
 
 # 5. Insertar un producto
 INSERT INTO productos (precio, cantidad, recomendacion, imagen, categoria, nombre, visible)
-VALUES (20, 100, 1, 'imagen', 'bebida abierta', 'Coca Cola', 1);
+VALUES (20, 100, 1, 'imagen', 'Bebida abierta', 'Coca Cola', 1);
+
+# otro producto
+INSERT INTO productos (precio, cantidad, recomendacion, imagen, categoria, nombre, visible)
+VALUES (15, 100, 0, 'imagen', 'Bebida cerrada', 'Agua', 1);
 
 # 6. Añadir ese producto a un pedido
 INSERT INTO pedido_tiene_producto (pedido_id, producto_id, cantidad, precio)
@@ -140,21 +148,70 @@ WHERE id = 1;
  */
 
 # 11. Consultar todos los pedidos
-SELECT * FROM pedidos;
+SELECT *
+FROM pedidos;
 
 # 12. Consultar todos los usuarios
-SELECT * FROM usuarios;
+SELECT *
+FROM usuarios;
 
 # 13. Consultar todos los mensajes
-SELECT * FROM mensajes;
+SELECT *
+FROM mensajes;
 
 # 14. Consultar todos los productos
-SELECT * FROM productos;
+SELECT *
+FROM productos;
 
 /* Consultas mas avanzadas */
 
 # 16. Todos los pedidos de un usuario
-SELECT * FROM pedidos
+SELECT *
+FROM pedidos
 WHERE id = (SELECT pedido_id FROM usuarios WHERE id = 1);
 
 
+-- Agregar más productos al pedido con id = 1
+
+-- Producto: Coca Cola (id = 1), agregar 3 unidades al pedido
+INSERT INTO pedido_tiene_producto (pedido_id, producto_id, cantidad, precio)
+VALUES (1, 1, 3, 20);
+
+-- Producto: Agua (id = 2), agregar 1 unidad al pedido
+INSERT INTO pedido_tiene_producto (pedido_id, producto_id, cantidad, precio)
+VALUES (1, 2, 1, 15);
+
+-- Insertar 10 productos con nombres comunes
+INSERT INTO productos (precio, cantidad, recomendacion, imagen, categoria, nombre, visible)
+VALUES (25, 50, 1, 'imagen', 'Bebida abierta', 'Refresco', 1),
+       (30, 30, 1, 'imagen', 'Alimentos', 'Hamburguesa', 1),
+       (10, 100, 0, 'imagen', 'Bebida cerrada', 'Agua', 1),
+       (40, 20, 1, 'imagen', 'Alimentos', 'Pizza', 1),
+       (15, 80, 0, 'imagen', 'Bebida abierta', 'Jugo de Naranja', 1),
+       (50, 10, 1, 'imagen', 'Alimentos', 'Tacos', 1),
+       (12, 90, 0, 'imagen', 'Bebida abierta', 'Café', 1),
+       (35, 40, 1, 'imagen', 'Alimentos', 'Sándwich', 1),
+       (8, 120, 0, 'imagen', 'Bebida cerrada', 'Limonada', 1),
+       (45, 15, 1, 'imagen', 'Alimentos', 'Ensalada', 1);
+
+-- Crear nuevos pedidos utilizando los productos recién insertados
+
+-- Pedido 2 (pago en efectivo)
+INSERT INTO pedidos (fecha, cant_a_pagar, propina, total, pagado, preferencias, ubicacion, folio, estado)
+VALUES ('2021-05-02', 90, 15, 105, 1, 'sin cebolla', 'Casa', null, 'pendiente');
+
+-- Asociar productos al Pedido 2 en la tabla pedido_tiene_producto
+INSERT INTO pedido_tiene_producto (pedido_id, producto_id, cantidad, precio)
+VALUES (2, 2, 1, 30), -- Hamburguesa
+       (2, 5, 2, 15), -- Jugo de Naranja
+       (2, 7, 1, 12);
+-- Café
+
+-- Pedido 3 (pago con tarjeta)
+INSERT INTO pedidos (fecha, cant_a_pagar, propina, total, pagado, preferencias, ubicacion, folio, estado)
+VALUES ('2021-05-03', null, 10, 55, 1, 'extra queso', 'Oficina', '9876543210', 'entregado');
+
+-- Asociar productos al Pedido 3 en la tabla pedido_tiene_producto
+INSERT INTO pedido_tiene_producto (pedido_id, producto_id, cantidad, precio)
+VALUES (3, 3, 3, 10), -- Agua
+       (3, 9, 1, 8); -- Limonada
